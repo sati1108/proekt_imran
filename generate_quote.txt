@@ -1,0 +1,38 @@
+    def generate_quote(self):
+        """Генерация случайной цитаты"""
+        if not self.quotes:
+            messagebox.showwarning("Предупреждение", "Нет доступных цитат")
+            return
+
+        quote = random.choice(self.quotes)
+        self.history.append(quote)
+        self.save_data()
+
+        # Отображаем цитату
+        display_text = f"\"{quote['text']}\"\n— {quote['author']} ({quote['topic']})"
+        self.quote_text.config(state=tk.NORMAL)
+        self.quote_text.delete(1.0, tk.END)
+        self.quote_text.insert(1.0, display_text)
+        self.quote_text.config(state=tk.DISABLED)
+
+        self.refresh_history()
+
+    def add_quote(self):
+        """Добавление новой цитаты"""
+        validation_result = self.validate_quote_input()
+        if not validation_result:
+            return
+
+        is_valid, text, author, topic = validation_result
+
+        new_quote = {"text": text, "author": author, "topic": topic}
+        self.quotes.append(new_quote)
+        self.save_data()
+        self.update_filters()
+
+        # Очищаем поля ввода
+        self.text_entry.delete(0, tk.END)
+        self.author_entry.delete(0, tk.END)
+        self.topic_entry.delete(0, tk.END)
+
+        messagebox.showinfo("Успех", "Цитата добавлена!")
